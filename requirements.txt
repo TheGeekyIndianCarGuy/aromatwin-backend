@@ -1,0 +1,11 @@
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+sqlalchemy==2.0.30
+pymysql==1.1.1
+pandas==2.2.2
+scikit-learn==1.5.0
+numpy==1.26.4
+python-dotenv==1.0.1
+cryptography==42.0.7
+pydantic==2.7.1
+pydantic-settings==2.2.1
