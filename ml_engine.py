@@ -74,22 +74,13 @@ ACCORD_POSITION_WEIGHTS = [1.0, 0.8, 0.6, 0.4, 0.2]
 # These are the highest-rated iconic scents in the dataset for each pole.
 # Keys must match the exact 'Perfume' column value in the CSV (lowercase, hyphenated).
 ANCHOR_PERFUME_KEYS: List[str] = [
-    "light-blue",          # Fresh · Citrus   (Dolce & Gabbana, 29 708 ratings)
-    "j-adore",             # Floral · White   (Dior,            25 013 ratings)
-    "black-opium",         # Sweet · Vanilla  (YSL,             25 669 ratings)
-    "black-orchid",        # Warm · Spicy     (Tom Ford,        26 053 ratings)
-    "baccarat-rouge-540",  # Woody · Amber    (MFK,             20 435 ratings)
+    "acqua-di-gio",        # Fresh · Citrus
+    "my-way",              # Floral · White
+    "black-opium",         # Sweet · Gourmand  (YSL)
+    "spicebomb",           # Warm · Spicy
+    "by-the-fireplace",    # Woody · Earthy
 ]
 
-# Hardcoded display metadata for anchors (brand colours, family labels, icons)
-# 5 calibration anchor perfumes — strictly from the L'Oréal Luxe portfolio
-ANCHOR_PERFUME_KEYS: List[str] = [
-    "acqua-di-gio",        # Fresh · Citrus   (Giorgio Armani)
-    "my-way",              # Floral · White   (Giorgio Armani)
-    "black-opium",         # Sweet · Vanilla  (YSL)
-    "spicebomb",           # Warm · Spicy     (Viktor&Rolf)
-    "by-the-fireplace",    # Woody · Amber    (Maison Margiela)
-]
 
 # Hardcoded display metadata for anchors (brand colours, family labels, icons)
 ANCHOR_META: Dict[str, dict] = {
