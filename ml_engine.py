@@ -82,19 +82,29 @@ ANCHOR_PERFUME_KEYS: List[str] = [
 ]
 
 # Hardcoded display metadata for anchors (brand colours, family labels, icons)
+# 5 calibration anchor perfumes — strictly from the L'Oréal Luxe portfolio
+ANCHOR_PERFUME_KEYS: List[str] = [
+    "acqua-di-gio",        # Fresh · Citrus   (Giorgio Armani)
+    "my-way",              # Floral · White   (Giorgio Armani)
+    "black-opium",         # Sweet · Vanilla  (YSL)
+    "spicebomb",           # Warm · Spicy     (Viktor&Rolf)
+    "by-the-fireplace",    # Woody · Amber    (Maison Margiela)
+]
+
+# Hardcoded display metadata for anchors (brand colours, family labels, icons)
 ANCHOR_META: Dict[str, dict] = {
-    "light-blue": {
-        "display_name": "Light Blue",
+    "acqua-di-gio": {
+        "display_name": "Acqua di Giò",
         "family_label": "FRESH · CITRUS",
         "family_key":   "fresh_citrus",
         "accent_color": "#4a8fa8",
         "icon":         "◈",
     },
-    "j-adore": {
-        "display_name": "J'Adore",
+    "my-way": {
+        "display_name": "My Way",
         "family_label": "FLORAL · WHITE",
         "family_key":   "floral",
-        "accent_color": "#b8860b",
+        "accent_color": "#e8a5b2",
         "icon":         "✦",
     },
     "black-opium": {
@@ -104,22 +114,21 @@ ANCHOR_META: Dict[str, dict] = {
         "accent_color": "#8b2635",
         "icon":         "◆",
     },
-    "black-orchid": {
-        "display_name": "Black Orchid",
+    "spicebomb": {
+        "display_name": "Spicebomb",
         "family_label": "WARM · SPICY",
         "family_key":   "warm_spicy",
         "accent_color": "#6a3d7a",
         "icon":         "❋",
     },
-    "baccarat-rouge-540": {
-        "display_name": "Baccarat Rouge 540",
-        "family_label": "WOODY · AMBER",
+    "by-the-fireplace": {
+        "display_name": "By the Fireplace",
+        "family_label": "WOODY · EARTHY",
         "family_key":   "woody",
         "accent_color": "#c47c2b",
         "icon":         "⬡",
     },
 }
-
 # Rocchio learning rate — scales how much each user rating moves the MAUT vector.
 # 0.35 is empirically tuned for 3 refinement rounds (total drift ≈ 30 % of vector magnitude).
 ROCCHIO_ALPHA = 0.35
