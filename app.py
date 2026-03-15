@@ -22,9 +22,10 @@ from sqlalchemy.orm import Session
 
 from database import engine, get_db, Base
 from models import (
-    User, ScentPassport, CalibrationLog, InteractionLog, Purchase,
+    User, ScentPassport, CalibrationLog, InteractionLog, Purchase, NotePreference,
     LoginRequest, LoginResponse,
     CalibrateRequest, RefineRequest, CheckoutRequest, ResetRequest,
+    SaveNotesRequest, LoadNotesResponse,
     RecommendationResponse, PerfumeCard, SimpleResponse, AnchorPerfume,
 )
 from ml_engine import AromaTwinEngine
@@ -352,6 +353,54 @@ def revisit(phone_number: str, db: Session = Depends(get_db)):
 
 
 @app.post(
+    "/notes/save",
+    response_model=SimpleResponse,
+    summary="Persist the full note-preference map for a user",
+)
+def save_notes(payload: SaveNotesRequest, db: Session = Depends(get_db)):
+    """
+    Atomically replaces all note_preferences rows for this user.
+    Called by the frontend after every rating batch (calibration + each refine round).
+    """
+    user = db.query(User).filter(User.phone_number == payload.phone_number).first()
+    if not user:
+        raise HTTPException(404, "User not found.")
+
+    db.query(NotePreference).filter(
+        NotePreference.phone_number == payload.phone_number
+    ).delete()
+
+    for note_name, score in payload.preferences.items():
+        db.add(NotePreference(
+            phone_number=payload.phone_number,
+            note_name=note_name,
+            score=score,
+        ))
+    db.commit()
+
+    return SimpleResponse(success=True, message="Note preferences saved.")
+
+
+@app.get(
+    "/notes/load",
+    response_model=LoadNotesResponse,
+    summary="Retrieve the stored note-preference map for a user",
+)
+def load_notes(phone_number: str, db: Session = Depends(get_db)):
+    """
+    Returns {note_name: score} for all saved note preferences.
+    Returns an empty dict if no data exists yet (new user / after reset).
+    """
+    rows = db.query(NotePreference).filter(
+        NotePreference.phone_number == phone_number
+    ).all()
+    return LoadNotesResponse(
+        phone_number=phone_number,
+        preferences={r.note_name: r.score for r in rows},
+    )
+
+
+@app.post(
     "/checkout",
     response_model=SimpleResponse,
     summary="Log the purchase",
@@ -392,6 +441,7 @@ def reset(payload: ResetRequest, db: Session = Depends(get_db)):
     db.query(ScentPassport).filter(ScentPassport.phone_number == payload.phone_number).delete()
     db.query(CalibrationLog).filter(CalibrationLog.phone_number == payload.phone_number).delete()
     db.query(InteractionLog).filter(InteractionLog.phone_number == payload.phone_number).delete()
+    db.query(NotePreference).filter(NotePreference.phone_number == payload.phone_number).delete()
     db.commit()
 
     return SimpleResponse(

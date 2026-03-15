@@ -56,6 +56,7 @@ class User(Base):
     calibration_logs = relationship("CalibrationLog", back_populates="user", cascade="all, delete-orphan")
     interaction_logs = relationship("InteractionLog", back_populates="user", cascade="all, delete-orphan")
     purchases        = relationship("Purchase",       back_populates="user", cascade="all, delete-orphan")
+    note_preferences = relationship("NotePreference", back_populates="user", cascade="all, delete-orphan")
 
 
 class ScentPassport(Base):
@@ -114,6 +115,22 @@ class Purchase(Base):
     purchased_at = Column(DateTime,   default=datetime.utcnow)
 
     user = relationship("User", back_populates="purchases")
+
+
+class NotePreference(Base):
+    """
+    Persisted note-preference map — one row per (user, note).
+    Accumulates across all visits; cleared only on /reset.
+    Mirrors the frontend S.nodePreferences dict exactly.
+    """
+    __tablename__ = "note_preferences"
+
+    id           = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    phone_number = Column(String(20), ForeignKey("users.phone_number"), nullable=False)
+    note_name    = Column(String(200), nullable=False)
+    score        = Column(Float,       nullable=False)
+
+    user = relationship("User", back_populates="note_preferences")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -178,6 +195,18 @@ class CheckoutRequest(BaseModel):
 
 class ResetRequest(BaseModel):
     phone_number: str
+
+
+class SaveNotesRequest(BaseModel):
+    """POST /notes/save — full replacement of the note-preference map."""
+    phone_number: str
+    preferences:  Dict[str, float]
+
+
+class LoadNotesResponse(BaseModel):
+    """GET /notes/load — returns the stored note-preference map."""
+    phone_number: str
+    preferences:  Dict[str, float]
 
 
 # ── Response Schemas ──────────────────────────────────────────────────────────
